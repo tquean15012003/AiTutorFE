@@ -2,19 +2,19 @@ import { Center, HStack, Hide, Spinner } from "@chakra-ui/react";
 import MainLayout, { MainLayoutContent } from "./pages/mainLayout";
 import { Outlet } from "react-router-dom";
 import { Route, Routes } from "react-router-dom";
-// import SearchPage from '@/pages/SearchPage/SeachPage'
 import { Suspense } from "react";
 import React from "react";
 import ConversationListSidebar from "./pages/chat/components/ConversationListSidebar";
+import { Panel } from "./components/panel";
 const ChatPage = React.lazy(() => import("./pages/chat/ChatPage"));
 
-const FallbackLoader = () => {
-  return (
+const FallbackLoader = () => (
+  <Panel>
     <Center w="full" h="100dvh">
       <Spinner size="lg" color="brand.purple.500" />
     </Center>
-  );
-};
+  </Panel>
+);
 
 const HomeLayOut = () => {
   return (
@@ -42,9 +42,17 @@ const HomeLayOut = () => {
 export const App: React.FC = () => {
   return (
     <Routes>
-      <Route path="/" element={<HomeLayOut />}>
+      <Route element={<HomeLayOut />}>
         <Route
           index
+          element={
+            <Suspense fallback={<FallbackLoader />}>
+              <ChatPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/:id"
           element={
             <Suspense fallback={<FallbackLoader />}>
               <ChatPage />

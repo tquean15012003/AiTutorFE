@@ -1,15 +1,11 @@
+import HelloBotIcon from "../../../assets/icons/hello-bot.svg?react";
+
 import { DarkModeBox } from "@/components/ColorMode";
-import {
-  Button,
-  HStack,
-  LightMode,
-  Skeleton,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
+import { Center, HStack, Skeleton, Stack, Text } from "@chakra-ui/react";
 import React, { useMemo } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import useConversationList from "../hooks/useConversationList";
+import { getPublicFileUrl } from "@/utils";
 
 const ConversationListSidebar: React.FC = () => {
   const { data, isLoading } = useConversationList();
@@ -21,16 +17,14 @@ const ConversationListSidebar: React.FC = () => {
     return data;
   }, [data]);
 
-  console.log(data);
-
   return (
     <DarkModeBox h="full">
       <Stack
         w="full"
-        maxW="350px"
-        minW={{ md: "300px", lg: "350px" }}
+        maxW="300px"
+        minW={{ md: "300px", lg: "300px" }}
         h="full"
-        px={4}
+        p={4}
         justify="space-between"
         overflow="auto"
       >
@@ -42,20 +36,40 @@ const ConversationListSidebar: React.FC = () => {
               <Skeleton h="40px" w="full" />
             </>
           )}
+
+          <HStack>
+            <Center
+              height="32px"
+              width="32px"
+              background="gray.300"
+              borderRadius="full"
+            >
+              <HelloBotIcon />
+            </Center>
+            <Text
+              sx={{
+                fontSize: "2xl",
+                fontWeight: "bold",
+              }}
+              mt={0.5}
+            >
+              AI Tutor
+            </Text>
+          </HStack>
           {transformedData.map((conversation) => (
             <HStack
               as={NavLink}
               to={`/${conversation.conversationId}`}
               _hover={{
-                bg: `purple`,
+                bg: `gray.700`,
               }}
               sx={{
                 "&.active": {
-                  bg: `purple`,
+                  bg: "gray.700",
                 },
               }}
               key={conversation.conversationId}
-              px={2}
+              p={2}
               role="group"
               borderRadius="md"
               cursor="pointer"
@@ -65,7 +79,7 @@ const ConversationListSidebar: React.FC = () => {
               <Text
                 sx={{
                   ".active > &": {
-                    color: "purple",
+                    color: "white",
                   },
                 }}
                 mt={0.5}
@@ -75,11 +89,6 @@ const ConversationListSidebar: React.FC = () => {
             </HStack>
           ))}
         </Stack>
-        <LightMode>
-          <Button colorScheme="brand.purple" as={Link} to="/create" w="full">
-            Create Assistant
-          </Button>
-        </LightMode>
       </Stack>
     </DarkModeBox>
   );

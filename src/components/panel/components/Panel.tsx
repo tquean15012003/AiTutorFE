@@ -1,11 +1,11 @@
-import useElementSize from '@/hooks/useElementSize';
-import { Box, BoxProps, Container, Flex, FlexProps } from '@chakra-ui/react';
-import { motion } from 'framer-motion';
-import React from 'react';
+import useElementSize from "../../../hooks/useElementSize";
+import { Box, BoxProps, Container, Flex, FlexProps } from "@chakra-ui/react";
+import { motion } from "framer-motion";
+import React from "react";
 
-import { DEFAULT_CONTAINER_MAX_WIDTH } from '../constants';
-import { usePanel } from '../hooks/usePanel';
-import { PanelProvider } from '../providers/PanelProvider';
+import { DEFAULT_CONTAINER_MAX_WIDTH } from "../constants";
+import { usePanel } from "../hooks/usePanel";
+import { PanelProvider } from "../providers/PanelProvider";
 
 export const PanelHeader: React.FC<FlexProps> = ({ children, ...props }) => (
   <Flex
@@ -27,18 +27,24 @@ export const PanelContent: React.FC<FlexProps> = ({ children, ...props }) => (
   </Flex>
 );
 
-export const PanelBody: React.FC<BoxProps & { disableFooterPadding?: boolean }> = ({
-  children,
-  disableFooterPadding = false,
-  ...props
-}) => {
+export const PanelBody: React.FC<
+  BoxProps & { disableFooterPadding?: boolean }
+> = ({ children, disableFooterPadding = false, ...props }) => {
   const { footerHeight } = usePanel();
 
   return (
     <Box overflow="auto" pos="relative" h="full">
-      <Container py={6} maxW={DEFAULT_CONTAINER_MAX_WIDTH} flexGrow={1} h="full" {...props}>
+      <Container
+        py={6}
+        maxW={DEFAULT_CONTAINER_MAX_WIDTH}
+        flexGrow={1}
+        h="full"
+        {...props}
+      >
         {children}
-        {!disableFooterPadding && !!footerHeight && <Box h={`${footerHeight}px`} />}
+        {!disableFooterPadding && !!footerHeight && (
+          <Box h={`${footerHeight}px`} />
+        )}
       </Container>
     </Box>
   );
@@ -69,7 +75,12 @@ export const PanelFooter: React.FC<FlexProps> = ({ children, ...props }) => {
 };
 
 const PanelChildren: React.FC<FlexProps> = ({ children, ...props }) => {
-  const { getDrawerDisclosureProps, isDrawerOpen, isDrawerHidden, setDrawerHidden } = usePanel();
+  const {
+    getDrawerDisclosureProps,
+    isDrawerOpen,
+    isDrawerHidden,
+    setDrawerHidden,
+  } = usePanel();
   return (
     <>
       <Flex
@@ -80,6 +91,7 @@ const PanelChildren: React.FC<FlexProps> = ({ children, ...props }) => {
         pos="relative"
         gap={0}
         bg="gray.100"
+        mt={4}
         {...props}
       >
         {children}
