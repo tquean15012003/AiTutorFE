@@ -4,15 +4,14 @@ import { useQuery } from "@tanstack/react-query";
 import { IConversationMessage } from "../types";
 
 const CONVERSATION: IConversationMessage[] = [
-  {
-    role: "user",
-    content: "Hi",
-  },
-  {
-    role: "assistant",
-    content: "Hi. How can I help you?",
-    isPending: true,
-  },
+  // {
+  //   role: "user",
+  //   content: "Hi",
+  // },
+  // {
+  //   role: "assistant",
+  //   content: "Hi. How can I help you?",
+  // },
 ];
 const useConversation = (id?: string) => {
   return useQuery({

@@ -14,14 +14,21 @@ import {
   ChatMessages,
   SendChatButton,
 } from "./components/Chat";
-import { useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useConversation from "./hooks/useConversation";
 import FallbackPage from "../misc/misc";
+import useChatSubscription from "./hooks/useChatSubscription";
+import useInterval from "@/hooks/useInterval";
+import useIntersectionObserver from "@/hooks/useIntersectionObserver";
 
 const ChatPage = () => {
   const { id } = useParams();
   const [message, setMessage] = useState("");
   const bottomRef = useRef<HTMLDivElement>();
+  const entry = useIntersectionObserver(bottomRef as any, {
+    threshold: 0,
+    rootMargin: "-80px",
+  });
   const {
     data: conversation,
     isLoading: isLoadingConversation,
@@ -29,6 +36,39 @@ const ChatPage = () => {
   } = useConversation(id);
 
   const isLoading = isLoadingConversation;
+
+  const scrollToBottom = useCallback(
+    (behavior: ScrollBehavior = "smooth") => {
+      if (!isLoading) {
+        bottomRef.current?.scrollIntoView({ behavior });
+      }
+    },
+    [isLoading]
+  );
+
+  const { sendMessage, isReceivingMessage } = useChatSubscription(
+    {
+      id: id || "",
+    },
+    {
+      onMessageSent: () => scrollToBottom(),
+      onMessageEnd: () => scrollToBottom(),
+    }
+  );
+
+  useEffect(() => {
+    if (isReceivingMessage && !entry?.isIntersecting) {
+      scrollToBottom();
+    }
+  }, [entry?.isIntersecting, isReceivingMessage, scrollToBottom]);
+
+  useEffect(() => {
+    if (id && !isLoading) {
+      scrollToBottom("instant");
+    }
+  }, [id, isLoading, scrollToBottom]);
+
+  useInterval(scrollToBottom, isReceivingMessage ? 500 : null);
 
   const filteredConversations = useMemo(() => {
     if (!conversation) return [];
@@ -55,7 +95,7 @@ const ChatPage = () => {
           colorScheme={`brand.purple`}
           messages={filteredConversations}
           isLoading={isLoading}
-          isReceivingMessages={true}
+          isReceivingMessages={isReceivingMessage}
         >
           <PanelBody>
             <Stack spacing={4} overflow="auto" flexGrow={1}>
@@ -96,8 +136,7 @@ const ChatPage = () => {
                     message !== ""
                   ) {
                     e.preventDefault();
-                    // mutate(message);
-                    // sendMessage(message);
+                    sendMessage(message);
                     setMessage("");
                   }
                 }}
@@ -105,7 +144,7 @@ const ChatPage = () => {
               <SendChatButton
                 hasInputMessage={message !== "" && !!message?.length}
                 onClick={() => {
-                  // sendMessage(message);
+                  sendMessage(message);
                   setMessage("");
                 }}
               />

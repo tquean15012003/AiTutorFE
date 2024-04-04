@@ -29,14 +29,6 @@ const ConversationListSidebar: React.FC = () => {
         overflow="auto"
       >
         <Stack spacing={1} py={1} px={2}>
-          {isLoading && (
-            <>
-              <Skeleton h="40px" w="full" />
-              <Skeleton h="40px" w="full" />
-              <Skeleton h="40px" w="full" />
-            </>
-          )}
-
           <HStack>
             <Center
               height="32px"
@@ -56,6 +48,13 @@ const ConversationListSidebar: React.FC = () => {
               AI Tutor
             </Text>
           </HStack>
+          {isLoading && (
+            <>
+              <Skeleton h="40px" w="full" />
+              <Skeleton h="40px" w="full" />
+              <Skeleton h="40px" w="full" />
+            </>
+          )}
           {transformedData.map((conversation) => (
             <HStack
               as={NavLink}
